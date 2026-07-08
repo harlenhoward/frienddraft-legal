@@ -1,0 +1,2 @@
+# frienddraft-legal
+Privacy Policy
