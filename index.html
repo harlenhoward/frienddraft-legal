@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Friend Draft — Draft Your Friends. Find Out Who Survives.</title>
+  <meta name="description" content="Pick your squad. Let the draft decide who plays what role. Find out what actually happens.">
+  <meta property="og:title" content="Friend Draft">
+  <meta property="og:description" content="Draft your friends into wild scenarios. Find out who survives.">
+  <meta property="og:image" content="https://harlenhoward.github.io/frienddraft-legal/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0A0A0C;
+      --surface:  #16161A;
+      --surface2: #1D1D22;
+      --line:     #2A2A30;
+      --text:     #F4F2EC;
+      --muted:    #8B8D93;
+      --gold:     #D4AF37;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ─────────────────────────────────── */
+    .hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(212,175,55,0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 50% 110%, rgba(212,175,55,0.06), transparent);
+      pointer-events: none;
+    }
+
+    .dice-hero {
+      font-size: clamp(72px, 18vw, 120px);
+      line-height: 1;
+      margin-bottom: 32px;
+      animation: float 4s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50%       { transform: translateY(-14px) rotate(3deg); }
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(52px, 14vw, 96px);
+      line-height: 0.92;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+      color: var(--text);
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title span {
+      color: var(--gold);
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 4vw, 20px);
+      color: var(--muted);
+      line-height: 1.55;
+      max-width: 440px;
+      margin: 0 auto 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-appstore {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--text);
+      color: var(--bg);
+      border-radius: 14px;
+      padding: 16px 28px;
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+
+    .btn-appstore:hover { transform: scale(1.03); }
+    .btn-appstore:active { transform: scale(0.98); opacity: 0.9; }
+
+    .btn-appstore svg { flex-shrink: 0; }
+
+    .btn-notify {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 22px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-notify:hover { border-color: var(--muted); color: var(--text); }
+
+    .coming-soon-badge {
+      display: inline-block;
+      background: rgba(212,175,55,0.12);
+      border: 1px solid rgba(212,175,55,0.3);
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border-radius: 6px;
+      padding: 4px 10px;
+      margin-bottom: 10px;
+    }
+
+    /* ── SCROLL INDICATOR ─────────────────────── */
+    .scroll-hint {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      animation: fadeUpDown 2s ease-in-out infinite;
+    }
+
+    @keyframes fadeUpDown {
+      0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+      50%       { opacity: 1;   transform: translateX(-50%) translateY(5px); }
+    }
+
+    /* ── HOW IT WORKS ─────────────────────────── */
+    .section {
+      padding: 80px 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .section-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(32px, 8vw, 52px);
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 56px;
+      line-height: 1;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 28px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step::before {
+      content: attr(data-num);
+      position: absolute;
+      top: -8px;
+      right: 16px;
+      font-family: 'Anton', sans-serif;
+      font-size: 80px;
+      color: var(--line);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .step-emoji { font-size: 32px; margin-bottom: 14px; display: block; }
+    .step-title { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
+    .step-body  { font-size: 13.5px; color: var(--muted); line-height: 1.55; }
+
+    /* ── SCENARIOS ────────────────────────────── */
+    .scenarios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .scenario-card {
+      border-radius: 18px;
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scenario-card.locked { opacity: 0.55; }
+
+    .scenario-emoji { font-size: 36px; margin-bottom: 12px; display: block; }
+    .scenario-name  {
+      font-family: 'Anton', sans-serif;
+      font-size: 20px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .scenario-intro { font-size: 13px; color: rgba(244,242,236,0.7); line-height: 1.5; }
+
+    .pro-lock {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(212,175,55,0.15);
+      border: 1px solid rgba(212,175,55,0.3);
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      border-radius: 6px;
+      padding: 3px 8px;
+    }
+
+    /* ── TIERS ────────────────────────────────── */
+    .tiers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .tier-card {
+      border-radius: 16px;
+      border-width: 1px;
+      border-style: solid;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .tier-stamp {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border-width: 2px;
+      border-style: solid;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      transform: rotate(-6deg);
+    }
+
+    .tier-stamp-label {
+      font-family: 'Anton', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+    }
+
+    .tier-name  { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+    .tier-odds  { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+    .tier-desc  { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* ── RESULT CARD PREVIEW ──────────────────── */
+    .card-preview {
+      background: linear-gradient(150deg, #4A6B3A, #0A0A0C);
+      border-radius: 22px;
+      padding: 36px 28px;
+      max-width: 380px;
+      margin: 0 auto;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    }
+
+    .card-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .card-stamp-wrap { display: flex; justify-content: center; margin-bottom: 18px; }
+
+    .card-stamp {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(-8deg);
+    }
+
+    .card-stamp-text {
+      font-family: 'Anton', sans-serif;
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+    }
+
+    .card-headline {
+      font-size: 17px;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.35;
+      margin-bottom: 16px;
+    }
+
+    .card-score {
+      font-family: 'Anton', sans-serif;
+      font-size: 52px;
+      color: #6A9B5A;
+      text-align: center;
+      line-height: 1;
+    }
+
+    .card-score-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.55);
+      text-align: center;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .card-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.12);
+      margin: 16px 0;
+    }
+
+    .card-roles { display: flex; flex-direction: column; gap: 10px; }
+
+    .card-role {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-role-name { font-size: 14px; font-weight: 800; }
+    .card-role-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .card-footer {
+      font-family: 'Anton', sans-serif;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 16px;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── SOCIAL PROOF ─────────────────────────── */
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .proof-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px;
+    }
+
+    .proof-stars { color: var(--gold); font-size: 14px; margin-bottom: 12px; }
+    .proof-text  { font-size: 14px; line-height: 1.6; color: var(--text); margin-bottom: 14px; }
+    .proof-name  { font-size: 12px; font-weight: 700; color: var(--muted); }
+
+    /* ── PRICING ──────────────────────────────── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 28px 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    .pricing-card.featured {
+      border-color: var(--gold);
+      background: rgba(212,175,55,0.06);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold);
+      color: var(--bg);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      border-radius: 6px;
+      padding: 4px 12px;
+      white-space: nowrap;
+    }
+
+    .pricing-plan { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.1em; }
+    .pricing-price { font-family: 'Anton', sans-serif; font-size: 42px; color: var(--text); line-height: 1; margin-bottom: 4px; }
+    .pricing-period { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .pricing-features li { font-size: 13.5px; color: var(--text); display: flex; align-items: center; gap: 8px; justify-content: center; }
+    .pricing-features li::before { content: "✓"; color: var(--gold); font-weight: 900; }
+
+    /* ── FINAL CTA ────────────────────────────── */
+    .final-cta {
+      padding: 100px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(212,175,55,0.08), transparent);
+      pointer-events: none;
+    }
+
+    .final-cta-dice { font-size: 56px; margin-bottom: 24px; display: block; }
+
+    .final-cta-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(36px, 9vw, 64px);
+      text-transform: uppercase;
+      line-height: 0.95;
+      margin-bottom: 20px;
+    }
+
+    .final-cta-sub {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 36px;
+      max-width: 360px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── FOOTER ───────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 28px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .footer-brand {
+      font-family: 'Anton', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.12em;
+      color: var(--text);
+    }
+
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a {
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--text); }
+
+    /* ── DIVIDER ──────────────────────────────── */
+    .section-divider {
+      height: 1px;
+      background: var(--line);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ── RESPONSIVE ───────────────────────────── */
+    @media (max-width: 480px) {
+      .steps { grid-template-columns: 1fr; }
+      .tiers { grid-template-columns: 1fr; }
+    }
+
+    /* ── EMAIL FORM ───────────────────────────── */
+    .email-form {
+      display: flex;
+      gap: 10px;
+      max-width: 380px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .email-input {
+      flex: 1;
+      min-width: 200px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.15s;
+    }
+
+    .email-input:focus { border-color: var(--gold); }
+    .email-input::placeholder { color: var(--muted); }
+
+    .email-submit {
+      background: var(--gold);
+      color: var(--bg);
+      border: none;
+      border-radius: 10px;
+      padding: 14px 22px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: opacity 0.15s;
+    }
+
+    .email-submit:hover { opacity: 0.9; }
+
+    .email-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HERO ─────────────────────────────────────── -->
+<section class="hero">
+  <div class="dice-hero">🎲</div>
+  <p class="hero-eyebrow">The viral squad game</p>
+  <h1 class="hero-title">Friend<span>Draft</span></h1>
+  <p class="hero-sub">
+    Pick your squad. Let the draft assign every role. Find out what actually happens when your friends face the zombie apocalypse — or worse.
+  </p>
+
+  <div class="hero-cta-group">
+    <div class="coming-soon-badge">Coming Soon to App Store</div>
+    <div class="email-form">
+      <input type="email" class="email-input" placeholder="your@email.com" id="emailInput">
+      <button class="email-submit" onclick="handleSubmit()">Notify Me</button>
+    </div>
+    <p class="email-note">No spam. Just a ping when it drops.</p>
+  </div>
+
+  <div class="scroll-hint">
+    <span>↓</span>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ── HOW IT WORKS ──────────────────────────────── -->
+<section class="section">
+  <p class="section-label">How it works</p>
+  <h2 class="section-title">Four Steps.<br>Zero Mercy.</h2>
+  <div class="steps">
+    <div class="step" data-num="1">
+      <span class="step-emoji">👥</span>
+      <div class="step-title">Enter your squad</div>
+      <div class="step-body">Add 2–3 friends. You're in the mix too. Up to 7 with Pro.</div>
+    </div>
+    <div class="step" data-num="2">
+      <span class="step-emoji">🎭</span>
+      <div class="step-title">Pick a scenario</div>
+      <div class="step-body">Zombie apocalypse. Heist crew. Hunger Games. 10 scenarios total.</div>
+    </div>
+    <div class="step" data-num="3">
+      <span class="step-emoji">🎲</span>
+      <div class="step-title">The draft decides</div>
+      <div class="step-body">Nobody picks their own role. The draft assigns everyone. No exceptions.</div>
+    </div>
+    <div class="step" data-num="4">
+      <span class="step-emoji">📲</span>
+      <div class="step-title">Share the result</div>
+      <div class="step-body">Your result card is built for Instagram Stories. Challenge your friends to beat it.</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ── SCENARIOS ─────────────────────────────────── -->
+<section class="section">
+  <p class="section-label">10 Scenarios</p>
+  <h2 class="section-title">Pick Your<br>Poison</h2>
+  <div class="scenarios-grid">
+    <div class="scenario-card" style="background: linear-gradient(150deg,#4A6B3A,#0A0A0C)">
+      <span class="scenario-emoji">🧟</span>
+      <div class="scenario-name">Zombie Apocalypse Squad</div>
+      <div class="scenario-intro">The outbreak started 3 days ago. Does your squad survive?</div>
+    </div>
+    <div class="scenario-card" style="background: linear-gradient(150deg,#1A3A4A,#0A0A0C)">
+      <span class="scenario-emoji">💰</span>
+      <div class="scenario-name">Heist Crew</div>
+      <div class="scenario-intro">One vault. One job. Someone is definitely getting caught.</div>
+    </div>
+    <div class="scenario-card" style="background: linear-gradient(150deg,#8B1A1A,#0A0A0C)">
+      <span class="scenario-emoji">🏹</span>
+      <div class="scenario-name">The Hunger Games</div>
+      <div class="scenario-intro">24 tributes. One arena. Zero mercy.</div>
+    </div>
+    <div class="scenario-card locked" style="background: linear-gradient(150deg,#7B2D8B,#0A0A0C)">
+      <span class="scenario-emoji">📺</span>
+      <div class="scenario-name">Reality TV House</div>
+      <div class="scenario-intro">Cameras rolling. Who survives elimination week?</div>
+      <div class="pro-lock">PRO</div>
+    </div>
+    <div class="scenario-card locked" style="background: linear-gradient(150deg,#1A2A5E,#0A0A0C)">
+      <span class="scenario-emoji">🚀</span>
+      <div class="scenario-name">Space Station Crisis</div>
+      <div class="scenario-intro">240 miles above Earth. One system failing every hour.</div>
+      <div class="pro-lock">PRO</div>
+    </div>
+    <div class="scenario-card locked" style="background: linear-gradient(150deg,#5C3A8B,#0A0A0C)">
+      <span class="scenario-emoji">🚗</span>
+      <div class="scenario-name">Cross-Country Road Trip</div>
+      <div class="scenario-intro">One car. Four people. One aux cord. 3,000 miles.</div>
+      <div class="pro-lock">PRO</div>
+    </div>
+  </div>
+  <p style="text-align:center;color:var(--muted);font-size:13px;margin-top:20px;">+ 4 more Pro scenarios. New ones drop monthly.</p>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ── RESULT CARD PREVIEW ────────────────────────── -->
+<section class="section">
+  <p class="section-label">The result</p>
+  <h2 class="section-title">Built to<br>Go Viral</h2>
+  <p style="text-align:center;color:var(--muted);font-size:16px;line-height:1.6;max-width:400px;margin:0 auto 48px;">Every game generates a cinematic result card sized for Instagram Stories. Share it. Challenge your friends. See who gets Legendary.</p>
+
+  <div class="card-preview">
+    <div class="card-eyebrow">🧟 Zombie Apocalypse Squad</div>
+    <div class="card-stamp-wrap">
+      <div class="card-stamp">
+        <span class="card-stamp-text">LEGENDARY</span>
+      </div>
+    </div>
+    <div class="card-headline">Your squad survived the full outbreak. Society rebuilds around Alex.</div>
+    <div class="card-score">94</div>
+    <div class="card-score-label">Days Survived</div>
+    <div class="card-divider"></div>
+    <div class="card-roles">
+      <div class="card-role"><span class="card-role-name">Alex (you)</span><span class="card-role-label">The Leader</span></div>
+      <div class="card-role"><span class="card-role-name">Jordan</span><span class="card-role-label">The Scout</span></div>
+      <div class="card-role"><span class="card-role-name">Sam</span><span class="card-role-label">The Medic</span></div>
+      <div class="card-role"><span class="card-role-name">Casey</span><span class="card-role-label">The Muscle</span></div>
+    </div>
+    <div class="card-divider"></div>
+    <div class="card-footer">FRIEND DRAFT</div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ── TIERS ──────────────────────────────────────── -->
+<section class="section">
+  <p class="section-label">Three outcomes</p>
+  <h2 class="section-title">One Roll.<br>No Mercy.</h2>
+  <div class="tiers">
+    <div class="tier-card" style="border-color:rgba(212,175,55,0.3);background:rgba(212,175,55,0.05)">
+      <div class="tier-stamp" style="border-color:#D4AF37">
+        <span class="tier-stamp-label" style="color:#D4AF37">LEGENDARY</span>
+      </div>
+      <div class="tier-name" style="color:#D4AF37">Legendary</div>
+      <div class="tier-odds" style="color:#D4AF37">15%</div>
+      <div class="tier-desc">Your squad actually pulled it off. Somehow. Don't question it.</div>
+    </div>
+    <div class="tier-card" style="border-color:rgba(154,167,176,0.3);background:rgba(154,167,176,0.05)">
+      <div class="tier-stamp" style="border-color:#9AA7B0">
+        <span class="tier-stamp-label" style="color:#9AA7B0">SOLID</span>
+      </div>
+      <div class="tier-name" style="color:#9AA7B0">Solid</div>
+      <div class="tier-odds" style="color:#9AA7B0">50%</div>
+      <div class="tier-desc">Messy. Chaotic. A few close calls. But everyone made it out.</div>
+    </div>
+    <div class="tier-card" style="border-color:rgba(178,58,58,0.3);background:rgba(178,58,58,0.05)">
+      <div class="tier-stamp" style="border-color:#B23A3A">
+        <span class="tier-stamp-label" style="color:#B23A3A">DISASTER</span>
+      </div>
+      <div class="tier-name" style="color:#B23A3A">Disaster</div>
+      <div class="tier-odds" style="color:#B23A3A">35%</div>
+      <div class="tier-desc">Someone has explaining to do. You know exactly who it is.</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ── PRICING ─────────────────────────────────────── -->
+<section class="section">
+  <p class="section-label">Pricing</p>
+  <h2 class="section-title">Pricing</h2>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="pricing-plan">Free</div>
+      <div class="pricing-price">$0</div>
+      <div class="pricing-period">forever</div>
+      <ul class="pricing-features">
+        <li>3 free scenarios</li>
+        <li>Squads of up to 4</li>
+        <li>Full result cards</li>
+        <li>Challenge links</li>
+      </ul>
+    </div>
+    <div class="pricing-card featured">
+      <div class="pricing-badge">BEST VALUE — SAVE 16%</div>
+      <div class="pricing-plan">Pro</div>
+      <div class="pricing-price">$9.99</div>
+      <div class="pricing-period">per year · or $0.99/month</div>
+      <ul class="pricing-features">
+        <li>7 additional scenarios</li>
+        <li>7 new scenarios every month</li>
+        <li>Squads up to 7</li>
+        <li>Everything in Free</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ── FINAL CTA ───────────────────────────────────── -->
+<section class="final-cta">
+  <span class="final-cta-dice">🎲</span>
+  <h2 class="final-cta-title">Draft Your<br>Friends.</h2>
+  <p class="final-cta-sub">Find out who's the Wildcard. Find out who's the Muscle. Find out who opens the door they were told not to open.</p>
+
+  <div class="email-form" style="margin-bottom:12px">
+    <input type="email" class="email-input" placeholder="your@email.com" id="emailInput2">
+    <button class="email-submit" onclick="handleSubmit2()">Notify Me</button>
+  </div>
+  <p class="email-note">Launching soon on iOS and Android.</p>
+</section>
+
+<!-- ── FOOTER ──────────────────────────────────────── -->
+<footer>
+  <div class="footer-brand">🎲 FRIEND DRAFT</div>
+  <div class="footer-links">
+    <a href="https://harlenhoward.github.io/frienddraft-legal/privacy.html">Privacy</a>
+    <a href="https://harlenhoward.github.io/frienddraft-legal/terms.html">Terms</a>
+    <a href="mailto:hello@frienddraft.app">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // Email capture — replace with your actual form handler
+  // Options: Mailchimp, ConvertKit, Resend, or a simple Supabase insert
+  function handleSubmit() {
+    var email = document.getElementById('emailInput').value;
+    if (!email || !email.includes('@')) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+    // TODO: replace with real form submission
+    // fetch('/api/waitlist', { method: 'POST', body: JSON.stringify({ email }) })
+    document.getElementById('emailInput').value = '';
+    document.getElementById('emailInput').placeholder = "You're on the list ✓";
+    document.getElementById('emailInput').style.borderColor = '#D4AF37';
+  }
+
+  function handleSubmit2() {
+    var email = document.getElementById('emailInput2').value;
+    if (!email || !email.includes('@')) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+    document.getElementById('emailInput2').value = '';
+    document.getElementById('emailInput2').placeholder = "You're on the list ✓";
+    document.getElementById('emailInput2').style.borderColor = '#D4AF37';
+  }
+</script>
+
+</body>
+</html>
