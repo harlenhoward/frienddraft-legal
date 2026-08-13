@@ -1,26 +1,44 @@
-<!-- Save as privacy.html and host at https://frienddraft.app/privacy -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Privacy Policy — Friend Draft</title>
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 680px; margin: 40px auto; padding: 0 20px; color: #222; line-height: 1.6; }
-    h1 { font-size: 28px; } h2 { font-size: 18px; margin-top: 32px; }
-    p, li { font-size: 15px; color: #444; }
+    :root { color-scheme: light dark; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1a1a1a;
+      background: #ffffff;
+    }
+    @media (prefers-color-scheme: dark) {
+      body { color: #e8e8e8; background: #0a0a0c; }
+      a { color: #7ab8ff; }
+    }
+    h1 { font-size: 1.8rem; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.25rem; margin-top: 2rem; }
+    ul { padding-left: 1.25rem; }
+    li { margin-bottom: 0.5rem; }
+    .updated { color: #888; font-size: 0.95rem; margin-bottom: 1.5rem; }
+    a { color: #0b66d0; }
   </style>
 </head>
 <body>
+
   <h1>Privacy Policy</h1>
-  <p><strong>Last updated:</strong> July 2026</p>
+  <p class="updated"><strong>Last updated:</strong> August 2026</p>
+
   <p>Friend Draft ("we", "our", "the app") is built to be simple, fun, and private. Here's exactly what we collect and why.</p>
 
   <h2>What we collect</h2>
   <ul>
     <li><strong>Friend names you enter</strong> — stored only on your device during gameplay. Never sent to our servers. Never stored after you close the app.</li>
-    <li><strong>Anonymous game events</strong> — e.g. "a game was played", "a scenario was picked", "a result was shared". No names, no device IDs. Used only to understand which scenarios are popular.</li>
-    <li><strong>Purchase receipts</strong> — handled entirely by Apple or Google. We use RevenueCat to verify your subscription status. We never see your payment details.</li>
+    <li><strong>Anonymous game events</strong> — e.g. "a game was played", "a scenario was picked", "a result was shared". These events carry no names and are not linked to your identity. They help us understand which scenarios are popular.</li>
+    <li><strong>Purchase data and identifiers</strong> — handled through Apple or Google. We use RevenueCat to verify your subscription status and restore purchases. To do this, RevenueCat uses a purchase record and a device or app-generated identifier associated with your device or store account. We never see your payment card details. We do not use these identifiers to track you across other apps or websites, and we do not sell them.</li>
     <li><strong>Push notification token</strong> — stored locally on your device and optionally on our servers to send you challenge notifications. You can disable this at any time in iOS/Android settings.</li>
   </ul>
 
@@ -35,24 +53,29 @@
 
   <h2>Third-party services</h2>
   <ul>
-    <li><strong>RevenueCat</strong> — processes in-app subscription purchases. <a href="https://www.revenuecat.com/privacy">RevenueCat Privacy Policy</a></li>
-    <li><strong>Supabase</strong> — stores anonymous analytics events. <a href="https://supabase.com/privacy">Supabase Privacy Policy</a></li>
+    <li><strong>RevenueCat</strong> — processes in-app subscription purchases and validation. <a href="https://www.revenuecat.com/privacy">RevenueCat Privacy Policy</a></li>
+    <li><strong>Supabase</strong> — stores app content and anonymous analytics events. <a href="https://supabase.com/privacy">Supabase Privacy Policy</a></li>
+    <li><strong>Apple App Store / Google Play</strong> — process payments and subscriptions.</li>
     <li><strong>Expo / EAS</strong> — used to build and deliver app updates. <a href="https://expo.dev/privacy">Expo Privacy Policy</a></li>
   </ul>
 
+  <h2>How we use information</h2>
+  <p>We use the information above only to operate and improve Friend Draft: to run the game, deliver and rotate scenarios, manage Pro subscriptions, restore purchases, send optional challenge notifications, and understand aggregate usage. We do not use your information for third-party advertising, and we do not sell your personal information.</p>
+
   <h2>Data retention</h2>
-  <p>Anonymous analytics events are retained for 12 months and then deleted. Push notification tokens are deleted if you uninstall the app or revoke notification permissions.</p>
+  <p>Anonymous analytics events are retained for 12 months and then deleted. Push notification tokens are deleted if you uninstall the app or revoke notification permissions. Subscription records are retained by our payments partner as needed to operate the subscription.</p>
 
   <h2>Children</h2>
-  <p>Friend Draft is rated 4+ and does not knowingly collect any data from children under 13.</p>
+  <p>Friend Draft is not directed to children under 13, and we do not knowingly collect personal information from children under 13.</p>
 
   <h2>Your rights</h2>
-  <p>Since we don't collect personal data, there's nothing to request deletion of. If you have questions, email us at <a href="mailto:privacy@frienddraft.app">privacy@frienddraft.app</a>.</p>
+  <p>Because the app does not require an account, we do not collect personal data tied to your identity. If you have questions about your data, or would like to request deletion of data associated with your subscription, email us at <a href="mailto:hello@frienddraft.app">hello@frienddraft.app</a> and we will respond within a reasonable time.</p>
 
   <h2>Changes</h2>
   <p>If we ever change this policy, we'll update the date above and note it in the app's release notes.</p>
 
   <h2>Contact</h2>
-  <p><a href="mailto:privacy@frienddraft.app">privacy@frienddraft.app</a></p>
+  <p><a href="mailto:hello@frienddraft.app">hello@frienddraft.app</a></p>
+
 </body>
 </html>
